@@ -1,0 +1,6 @@
+syntax = "proto2";
+package proto;
+
+message Message {
+	required string Body = 1;
+}

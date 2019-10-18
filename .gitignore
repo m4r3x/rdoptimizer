@@ -1,3 +1,6 @@
-
+# Build files
 rdoptimizer.exe
 _debug_bin
+
+# IDE
+.vscode/

@@ -3,6 +3,7 @@ package helpers
 import (
 	"math/rand" // There is no need to specify seed. We do actually care about reproducible randomness.
 	"net"
+	"time"
 )
 
 var devices = map[int]string{
@@ -20,7 +21,7 @@ var devices = map[int]string{
 }
 
 type country struct {
-	name string
+	name   string
 	cities []string
 }
 
@@ -45,15 +46,31 @@ func Device() string {
 	return devices[randInt(0, len(devices))]
 }
 
+// DeviceKey returns key of Mobile Device
+func DeviceKey() int {
+	return randInt(0, len(devices))
+}
+
 // Location consists of Country + City
 func Location() (string, string) {
 	country := countries[randInt(0, len(countries))]
 	return country.name, country.cities[randInt(0, len(country.cities))]
 }
 
+// LocationKey consists of keys Country + City
+func LocationKey() (int, int) {
+	countryKey := randInt(0, len(countries))
+	return randInt(0, len(countries)), randInt(0, len(countries[countryKey].cities))
+}
+
 // Event returns what action did user take.
 func Event() string {
 	return events[randInt(0, len(events))]
+}
+
+// EventKey returns key of what action did user take.
+func EventKey() int {
+	return randInt(0, len(events))
 }
 
 // IPV6Address returns string representation of IP address.
@@ -64,6 +81,24 @@ func IPV6Address() string {
 		ip = append(ip, number)
 	}
 	return ip.String()
+}
+
+var seededRand *rand.Rand = rand.New(rand.NewSource(time.Now().UnixNano()))
+
+const charset = "abcdefghijklmnopqrstuvwxyz" +
+	"ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" + " !@#$%^&*("
+
+// Text returns string which is random string
+func Text() string {
+
+	length := 2000
+
+	b := make([]byte, length)
+
+	for i := range b {
+		b[i] = charset[randInt(0, len(charset))]
+	}
+	return string(b)
 }
 
 func randInt(min int, max int) int {
