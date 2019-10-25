@@ -4,3 +4,4 @@ _debug_bin
 
 # IDE
 .vscode/
+.history/

@@ -48,7 +48,7 @@ func rawEventsBenchmark(client *redis.Client, withIP bool) string {
 	}
 
 	client.SAdd(makeTimestampKey(), fmt.Sprintf("%s.%s.%s.%s", device, country, city, event))
-	return fmt.Sprintf("%s %s %s %s %s %s \n", makeTimestampKey(), device, country, city, event, ip)
+	return fmt.Sprintf("%s %s %s %s %s \n", makeTimestampKey(), device, country, city, event)
 }
 
 var ipsMap = map[string]int{}
@@ -60,17 +60,17 @@ func mapsEventsBenchmark(client *redis.Client, withIP bool) string {
 	event := EventKey()
 	ip := IPV6Address()
 
-	ipsMapMutex.RLock()
-	ipKey, isset := ipsMap[ip]
-	ipsMapMutex.RUnlock()
-	if !isset {
-		ipKey = len(ipsMap) + 1
-		ipsMapMutex.Lock()
-		ipsMap[ip] = ipKey
-		ipsMapMutex.Unlock()
-	}
-
 	if withIP {
+		ipsMapMutex.RLock()
+		ipKey, isset := ipsMap[ip]
+		ipsMapMutex.RUnlock()
+		if !isset {
+			ipKey = len(ipsMap) + 1
+			ipsMapMutex.Lock()
+			ipsMap[ip] = ipKey
+			ipsMapMutex.Unlock()
+		}
+
 		client.SAdd(makeTimestampKey(), fmt.Sprintf("%d.%d.%d.%d.%d", device, country, city, event, ipKey))
 		return fmt.Sprintf("%s %d %d %d %d %d \n", makeTimestampKey(), device, country, city, event, ipKey)
 	}
