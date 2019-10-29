@@ -3,4 +3,5 @@ package proto;
 
 message Message {
 	required string Body = 1;
+	required string Header = 2;
 }

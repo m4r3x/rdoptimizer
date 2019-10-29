@@ -80,12 +80,16 @@ func mapsEventsBenchmark(client *redis.Client, withIP bool) string {
 }
 
 type message struct {
-	Body string
+	Body   string
+	Header string
 }
 
 func rawTextBenchmark(client *redis.Client) string {
 	t := Text()
-	m := message{Body: t}
+	m := message{
+		Body:   t,
+		Header: t,
+	}
 	jm, err := json.Marshal(m)
 
 	if err != nil {
@@ -101,7 +105,8 @@ func rawTextBenchmark(client *redis.Client) string {
 func protoTextBenchmark(client *redis.Client) string {
 	t := Text()
 	m := &proto.Message{
-		Body: pb.String(t),
+		Body:   pb.String(t),
+		Header: pb.String(t),
 	}
 	pm, err := pb.Marshal(m)
 
